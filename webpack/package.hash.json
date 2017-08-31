@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "kill": "taskkill /f /im node.exe",
+    "dll": "webpack --config webpack/dll.config.js",
+    "clear": "rm webpack/package.hash.json & rm webpack/manifest.json & rm -r statics",
+    "dev:build": "set NODE_ENV=development&& node webpack/checkdll.js && webpack --config webpack/dev.config.js -w --colors",
+    "dev:server": "set NODE_ENV=development&& node --inspect server/"
+  },
+  "dependencies": {
+    "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
+    "@types/react-router-dom": "^4.0.7",
+    "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "mobx": "^3.2.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-router-dom": "^4.2.2",
+    "ts-loader": "^2.3.4",
+    "typescript": "^2.4.2",
+    "webpack": "^3.5.5",
+    "webpack-merge": "^4.1.0"
+  }
+}
