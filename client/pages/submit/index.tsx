@@ -6,6 +6,6 @@ export default class Submit extends React.Component {
     }
 
     componentDidMount() {
-        document.title = '提交';
+        document.title = '提交~';
     }
 }

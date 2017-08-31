@@ -2,11 +2,9 @@
   "scripts": {
     "kill": "taskkill /f /im node.exe",
     "dll": "webpack --config webpack/dll.config.js",
-    "clear": "rm webpack/package.hash.json & rm webpack/manifest.json & rm -r statics",
+    "clear": "rm webpack/package.hash.json & rm webpack/depends.hash.json & rm -r statics",
     "dev:build": "set NODE_ENV=development&& node webpack/checkdll.js && webpack --config webpack/dev.config.js -w --colors",
-    "dev:server": "set NODE_ENV=development&& node --inspect server/",
-    "build": "",
-    "server": ""
+    "dev:server": "set NODE_ENV=development&& node --inspect server/"
   },
   "dependencies": {
     "@types/react": "^16.0.5",

@@ -62,25 +62,34 @@ export default class ReactRouter {
 
     push(path: Path) {
         const newUrl = this.url.update(path);
-        const route = this.match(newUrl);
+        const route = this.match(newUrl) as RouteOptions;
 
         if (route) {
-
+            this.runHooks(route.beforeLeave, () => {
+                location.href = newUrl.url;
+            });
         }
     }
 
     replace(path: Path) {
+        const newUrl = this.url.update(path);
+        const route = this.match(newUrl) as RouteOptions;
 
+        if (route) {
+            this.runHooks(route.beforeLeave, () => {
+                location.replace(newUrl.url);
+            })
+        }
     }
 
-    private href: string;
+    private oldHref: string;
     private confilict: boolean;
     private url: UrlParser;
     private current: Route | null;
     private routes: Routes;
 
     private recordHref() {
-        this.href = location.href;
+        this.oldHref = location.href;
     }
 
     private makeConfilict() {
@@ -102,21 +111,25 @@ export default class ReactRouter {
         return null;
     }
 
+    private mount(route: Route) {
+        const Component = this.getComponent(route);
+        const props = {}; // todo
+        ReactDOM.render(
+            <Component {...props}></Component>,
+            document.getElementById("root")
+        );
+    }
+
     private register() {
         if (this.confilict) return this.solveConfilict();
 
         const url = this.url = new UrlParser(location.href);
-        const route = this.current = this.match(url);
+        const route = this.current = this.match(url) as RouteOptions;
 
         if (route) {
-            this.transition(route, () => {
-                const Component = this.getComponent(route);
-                const props = {}; // todo
-                ReactDOM.render(
-                    <Component {...props}></Component>,
-                    document.getElementById("root")
-                );
-            });
+            const action = () => this.mount(route);
+            const reject = () => this.rollback();
+            this.runHooks(route.beforeEnter, action, reject);
         }
 
         this.recordHref();
@@ -129,34 +142,22 @@ export default class ReactRouter {
         return opts.page ? opts.page : (route as React.ComponentClass);
     }
 
-    private transition(route: Route, action: Function) {
-        const opts = route as RouteOptions;
-
-        if (opts.page) {
-            if (!this.runHooks(opts, action)) {
-                this.rollback();
-            }
-        } else {
-            action();
-        }
-    }
-
     private rollback() {
-        this.makeConfilict();
-        location.replace(this.href);
+        if (location.href != this.oldHref) {
+            this.makeConfilict();
+            location.replace(this.oldHref);
+        }
     }
 
-    /** if hook not prevent return true */
-    private runHooks(opts: RouteOptions, hook: Function, action: Function) {
-        let shouldEnter = true;
+    /** if hook not prevented return true */
+    private runHooks(hook: Function | undefined, action: Function, reject = ()=>{}) {
+        let prevented = false;
         let prevent = () => {
-            shouldEnter = false;
+            prevented = true;
         }
 
-        beforeEnter && beforeEnter(prevent);
-        shouldEnter && action();
-
-        return shouldEnter;
+        hook && hook(prevent);
+        prevented ? reject() : action();
     }
 }
 

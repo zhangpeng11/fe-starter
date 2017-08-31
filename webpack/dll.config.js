@@ -25,12 +25,7 @@ module.exports = {
         new webpack.DllPlugin({
             path: path.resolve(__dirname, 'depends.hash.json'),
             name: '[name]',
-            context: '.'
-        }),
-        // new webpack.optimize.UglifyJsPlugin({ // uglifjs压缩
-        //     compress: {
-        //         warnings: false
-        //     }
-        // })
+            context: __dirname
+        })
     ]
 }

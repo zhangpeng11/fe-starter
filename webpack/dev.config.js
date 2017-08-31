@@ -9,8 +9,8 @@ module.exports = merge(base, {
     
     plugins: [
         new webpack.DllReferencePlugin({
-            context: '.',
-		    manifest: 'require("./depends.hash.json")',
+            context: __dirname,
+		    manifest: require('./depends.hash.json'),
 	    })
     ],
     

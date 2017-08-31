@@ -7,7 +7,6 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.context.history);
         document.title = '神來之手';
     }
 }

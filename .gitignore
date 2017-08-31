@@ -1,0 +1,4 @@
+node_modules/
+statics/
+webpack/depends.hash.json
+webpack/package.hash.json
