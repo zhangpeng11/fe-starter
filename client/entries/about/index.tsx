@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
-
-declare var require: any;
+import router from '../../router'
 
 class About extends React.Component {
     render() {
@@ -9,10 +8,7 @@ class About extends React.Component {
     }
 
     gotoSubmit = () => {
-        require.ensure([], () =>{
-            const Submit = require('../../pages/submit/index.tsx');
-            console.log(Submit);
-        }, 'submit');
+        router.push('/submit')
     }
 
     componentDidMount() {

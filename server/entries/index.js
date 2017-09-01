@@ -18,7 +18,7 @@ getEntries(solve(entries)).forEach(entry => {
 
     async function output(ctx, next) {
         await next();
-        
+
         if (!TPL[entry]) {
             throw new Error(`must get tpl but got: ${TPL[entry]}`)
         }
@@ -32,22 +32,27 @@ function makeHtmlTpl(options = {}) {
     const staticsDir = solve(statics);
     const libfile = `${dll}.js`;
     const businessfile = `${entry}.js`;
-    
+    const polyfill = 'polyfill.iife.js';
+
     let injectedLib = '';
     let injectedBusiness = '';
     let injectedStyle = '';
+    let injectedIIFE = '';
 
     if (inline) {
         const lib = content(solve(staticsDir, libfile));
-        const business = content(solve(statics, businessfile));
+        const business = content(solve(staticsDir, businessfile));
+        const iife = content(solve(staticsDir, polyfill));
 
         injectedLib = `<script>${lib}</script>`;
         injectedBusiness = `<script>${business}</script>`;
+        injectedIIFE = `<script>${iife}</script>`;
     } else {
-        injectedLib = `<script src="${statics}/${libfile}"></script>`;
-        injectedBusiness = `<script src="${statics}/${businessfile}"></script>`;
+        injectedLib = `<script src="/${statics}/${libfile}"></script>`;
+        injectedBusiness = `<script src="/${statics}/${businessfile}"></script>`;
+        injectedIIFE = `<script src="/${statics}/${polyfill}"></script>`;
     }
-    
+
     return `<!DOCTYPE html>
         <head>
             <meta charset="UTF-8">
@@ -55,6 +60,7 @@ function makeHtmlTpl(options = {}) {
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <title>${title}</title>
             ${injectedLib}
+            ${injectedIIFE}
         </head>
         <body>
             <div id="root"></div>

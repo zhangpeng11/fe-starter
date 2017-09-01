@@ -56,8 +56,16 @@ export default class ReactRouter {
         this.routes = routes;
         this.recordHref();
 
-        window.addEventListener('onload', () => this.register());
-        window.addEventListener('hashchange', () => this.register());
+        window.addEventListener('load', () => this.register());
+        window.addEventListener('hashchange', () => {
+
+            this.register()
+
+            if (!this.url.lastHash) {
+                console.log('reload');
+                location.reload();
+            }
+        });
     }
 
     push(path: Path) {
@@ -66,7 +74,7 @@ export default class ReactRouter {
 
         if (route) {
             this.runHooks(route.beforeLeave, () => {
-                location.href = newUrl.url;
+                location.hash = location.hash + newUrl.lastHash;
             });
         }
     }
@@ -82,8 +90,8 @@ export default class ReactRouter {
         }
     }
 
-    private oldHref: string;
-    private confilict: boolean;
+    private oldHref = '';
+    private confilict = false;
     private url: UrlParser;
     private current: Route | null;
     private routes: Routes;
@@ -181,7 +189,7 @@ export type Query = {
 export class UrlParser {
     constructor(url: string) {
         if (!this.isLegalUrl()) throw new Error(`url argument must be legal format. got: ${url}`);
-
+        this._url = url;
         this._lastHash = this.parseLastHashPart();
         this._search = this.parseSearch();
         this._path = this.parsePath();
@@ -205,7 +213,7 @@ export class UrlParser {
      */
     update(path: Path) {
         const pathStr = this.genetatePath(path);
-        const urlStr = this.url.replace(this.lastHash, pathStr);
+        const urlStr = this.lastHash ? this.url.replace(this.lastHash, pathStr) : `${this.url}/#${pathStr}`;
 
         return new UrlParser(urlStr);
     }
@@ -250,20 +258,20 @@ export class UrlParser {
         let url = this.url;
         let i = url.length - 2;
 
-        for (; i; i--) {
+        for (; i > 0; i--) {
             if (url[i] == '#' && url[i+1] == '/') {
                 break;
             }
         }
 
-        return url.substr(i + 1);
+        return i == 0 ? ''  : url.substr(i + 1);
     }
 
     private parsePath() {
         // assert had got this._lastHash and this.search
 
         const total = this._lastHash.length;
-        const tail = `?${this._search}`.length;
+        const tail = this._search.length;
 
         return this._lastHash.substr(0, total - tail);
     }
@@ -273,15 +281,15 @@ export class UrlParser {
         // if (!this._lastHash) throw new Error('some error happend UrlParser itself');
 
         let hash = this._lastHash;
-        let i = hash.length - 2;
+        let i = 0;
 
-        for ( ; i; i--) {
+        for (i; i < hash.length; i++) {
             if (hash[i] == '?') {
                 break;
             }
         }
 
-        return hash.substr(i + 1);
+        return hash.substr(i);
     }
 
     /**
@@ -292,8 +300,8 @@ export class UrlParser {
     private parserQuery() {
         // assert had got this._search
 
-        const keyAndValues = this._search.split('&');
-        const ret = {} as Query;
+        const keyAndValues = this._search.substr(1).split('&');
+        const ret = Object.create(null) as Query;
 
         keyAndValues.forEach(kv => {
             const part = kv.split('=');

@@ -1,12 +1,12 @@
 const fs = require('fs');
 const router = require('koa-router')();
 const {solve} = require('../../utils/path');
-const {statics} = require('../../convention');
+const {statics} = require('../../manifest.dsl');
 
 function static(dir) {
     dir = removeSlash(dir);
     dir = `/${dir}/*`;
-    
+
     router.get(dir, async function(ctx, next) {
         await next();
 

@@ -4,7 +4,9 @@
     "dll": "webpack --config webpack/dll.config.js",
     "clear": "rm webpack/package.hash.json & rm webpack/depends.hash.json & rm -r statics",
     "dev:build": "set NODE_ENV=development&& node webpack/checkdll.js && webpack --config webpack/dev.config.js -w --colors",
-    "dev:server": "set NODE_ENV=development&& node --inspect server/"
+    "dev:server": "set NODE_ENV=development&& node --inspect server/",
+    "build": "NODE_ENV=development node webpack/checkdll.js && webpack --config webpack/dev.config.js -w --colors",
+    "server": "NODE_ENV=development node --inspect server/"
   },
   "dependencies": {
     "@types/react": "^16.0.5",

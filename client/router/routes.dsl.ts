@@ -1,4 +1,4 @@
-import Submit from '../pages/Submit'
+import Submit from '../pages/submit'
 
 export default {
     '/submit': Submit

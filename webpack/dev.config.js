@@ -5,16 +5,18 @@ const resolve = require('./resolve');
 const {solve} = require('../utils/path');
 
 module.exports = merge(base, {
-    // cache: true,
-    
+    cache: true,
+
+    entry: {
+        'polyfill.iife': solve('./client/polyfill.iife')
+    },
+
     plugins: [
         new webpack.DllReferencePlugin({
             context: __dirname,
 		    manifest: require('./depends.hash.json'),
 	    })
-    ],
-    
-    // resolve,
+    ]
 });
 
 console.info('~ dev building...');
