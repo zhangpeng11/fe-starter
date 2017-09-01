@@ -51,6 +51,9 @@ export type PathOptions = {
     query: Query;
 }
 
+declare const __ReactDOMRender__: Function;
+declare const __ReactRenderLogs__: any[];
+
 export default class ReactRouter {
     constructor(routes: Routes) {
         this.routes = routes;
@@ -62,8 +65,12 @@ export default class ReactRouter {
             this.register()
 
             if (!this.url.lastHash) {
-                console.log('reload');
-                location.reload();
+                const logs = __ReactRenderLogs__;
+                const last = logs.pop();
+
+                if (last) {
+                    ReactDOM.render(last[0], last[1]);
+                }
             }
         });
     }
@@ -74,7 +81,9 @@ export default class ReactRouter {
 
         if (route) {
             this.runHooks(route.beforeLeave, () => {
-                location.hash = location.hash + newUrl.lastHash;
+                location.hash = this.url.lastHash
+                    ? location.hash.replace(this.url.lastHash, newUrl.lastHash)
+                    : `${location.hash}#${newUrl.lastHash}`;
             });
         }
     }
@@ -91,7 +100,7 @@ export default class ReactRouter {
     }
 
     private oldHref = '';
-    private confilict = false;
+    private conflict = false;
     private url: UrlParser;
     private current: Route | null;
     private routes: Routes;
@@ -100,12 +109,12 @@ export default class ReactRouter {
         this.oldHref = location.href;
     }
 
-    private makeConfilict() {
-        this.confilict = true;
+    private makeConflict() {
+        this.conflict = true;
     }
 
-    private solveConfilict() {
-        this.confilict = false;
+    private solveConflict() {
+        this.conflict = false;
     }
 
     /** if current path mathed return matched route */
@@ -122,14 +131,15 @@ export default class ReactRouter {
     private mount(route: Route) {
         const Component = this.getComponent(route);
         const props = {}; // todo
-        ReactDOM.render(
+        __ReactDOMRender__.call(
+            ReactDOM,
             <Component {...props}></Component>,
             document.getElementById("root")
         );
     }
 
     private register() {
-        if (this.confilict) return this.solveConfilict();
+        if (this.conflict) return this.solveConflict();
 
         const url = this.url = new UrlParser(location.href);
         const route = this.current = this.match(url) as RouteOptions;
@@ -152,7 +162,7 @@ export default class ReactRouter {
 
     private rollback() {
         if (location.href != this.oldHref) {
-            this.makeConfilict();
+            this.makeConflict();
             location.replace(this.oldHref);
         }
     }
@@ -323,3 +333,9 @@ function decode(s: string) {
 function encode(s: string) {
     return s === undefined ? '' : encodeURIComponent(s);
 }
+
+/**
+ * test cases
+ * = 1 ===========================
+ *
+ */
