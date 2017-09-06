@@ -18,11 +18,6 @@
  *     assert(a == 4);
  * }, '4 assert should be fail');
  *
- * ! CONVENTION
- * DO NOT USE console.log
- * console.warn as debug info
- * console.info as logs
- * console.error as must handled error
  */
 
 class AssertionError extends Error {}
