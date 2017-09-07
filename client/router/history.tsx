@@ -32,13 +32,13 @@ import * as React from 'react'
 import * as ReactDOM from "react-dom"
 
 export type RouteOptions = {
-  page: React.ComponentClass;
+  page: Function;
   beforeEnter?: Function;
   beforeLeave?: Function;
   props?: Function;
 }
 
-export type Route = React.ComponentClass | RouteOptions | Function/* Actual want arrow function here */;
+export type Route = RouteOptions | Function;
 
 export type Routes = {
   [path: string]: Route;
@@ -139,17 +139,17 @@ export default class HistoryRouter {
   /** get React ComponentClass */
   private async getComponent(route: Route) {
     const opts = route as RouteOptions;
-    const ReactClass = route as React.ComponentClass;
     const asyncComponent = route as Function;
-    const isReactClass = ReactClass.prototype && ReactClass.prototype.render;
 
-    if (isReactClass) {
-      return ReactClass;
-    } else if (opts.page) {
-      return opts.page;
+    let ret: React.ComponentClass;
+
+    if (opts.page) {
+      ret =  (await opts.page()).default;
     } else {
-      return (await asyncComponent()).default as React.ComponentClass;
+      ret = (await asyncComponent()).default;
     }
+
+    return ret;
   }
 
   private rollback() {

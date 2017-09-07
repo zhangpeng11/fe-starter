@@ -3,7 +3,8 @@
     "dll": "webpack --config webpack/dll.config.js",
     "clear": "rm -r statics",
     "build": "NODE_ENV=development webpack --config webpack/dev.config.js -w --colors",
-    "server": "NODE_ENV=development node --inspect server/"
+    "server": "NODE_ENV=development node --inspect server/",
+    "dev": "npm run clear; npm run dll; npm run build; npm run server"
   },
   "dependencies": {
     "@types/react": "^16.0.5",

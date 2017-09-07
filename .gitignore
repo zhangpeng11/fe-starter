@@ -1,4 +1,5 @@
 node_modules/
 statics/
+.vscode/
 webpack/depends.hash.json
 webpack/package.hash.json

@@ -1,4 +1,4 @@
 import Router from './history'
-import routes from './routes.dsl'
+import routes = require('../../utils/routes.dsl')
 
 export default new Router(routes);

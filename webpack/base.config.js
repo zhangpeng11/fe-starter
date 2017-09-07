@@ -4,7 +4,8 @@ const tsconf = require(solve('client/tsconfig.json'));
 
 
 const rules = [
-    { test: /\.tsx?$/, loader: 'ts-loader', options: tsconf }
+    { test: /\.tsx?$/, loader: 'ts-loader', options: tsconf },
+    { test: /routes\.dsl\.js$/, loader: 'route-loader' },
 ]
 
 module.exports = {
@@ -20,6 +21,10 @@ module.exports = {
 
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.json']
+    },
+
+    resolveLoader: {
+        modules: ['node_modules', 'webpack'],
     }
 }
 

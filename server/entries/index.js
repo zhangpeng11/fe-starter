@@ -3,16 +3,19 @@ const router = new Router();
 const {getEntries, content} = require('../../utils/fs');
 const {solve} = require('../../utils/path');
 const {entries, statics, dll} = require('../../utils/manifest.dsl');
-const alias = require('./alias.dsl');
+const routes = require('../../utils/routes.dsl');
 const TPL = {};
 
 getEntries(solve(entries)).forEach(entry => {
-    const route = `/${entry}`;
-    const aliased = alias[route];
+    const pathname = `/${entry}`;
+    const route = routes[pathname];
 
-    aliased &&
-    router.get(aliased, output);
-    router.get(route, output);
+    router.get(pathname, output);
+
+    /** support alias feature */
+    if (route && route.alias) {
+        router.get(route.alias, output);
+    }
 
     TPL[entry] = makeHtmlTpl({entry, statics});
 
