@@ -1,6 +1,6 @@
 # Fronted End Starter
 
-> A lighter Starter No complex config
+> Lighter & No Complex Config Starter
 
 ## Keywords
 
