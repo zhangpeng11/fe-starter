@@ -1,5 +1,5 @@
 const {solve} = require('../utils/path');
-const {entries, statics} = require('../manifest.dsl');
+const {entries, statics} = require('../utils/manifest.dsl');
 // const {getEntries} = require('../utils/fs');
 const tsconf = require(solve('client/tsconfig.json'));
 

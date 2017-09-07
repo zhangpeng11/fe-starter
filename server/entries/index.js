@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const router = new Router();
 const {getEntries, content} = require('../../utils/fs');
 const {solve} = require('../../utils/path');
-const {entries, statics, dll} = require('../../manifest.dsl');
+const {entries, statics, dll} = require('../../utils/manifest.dsl');
 const alias = require('./alias.dsl');
 const TPL = {};
 

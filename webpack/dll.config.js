@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const resolve = require('./resolve');
 const {solve} = require('../utils/path');
-const {statics} = require('../manifest.dsl');
+const {statics} = require('../utils/manifest.dsl');
 
 // = depend lib/framworks ========
 const dll = [
@@ -12,7 +12,7 @@ const dll = [
 
 module.exports = {
     entry: {dll},
-    
+
     output: {
         path: solve(statics),
 		filename: "[name].js",
@@ -20,7 +20,7 @@ module.exports = {
     },
 
     resolve,
-    
+
     plugins: [
         new webpack.DllPlugin({
             path: path.resolve(__dirname, 'depends.hash.json'),

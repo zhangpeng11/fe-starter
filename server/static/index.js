@@ -1,7 +1,7 @@
 const fs = require('fs');
 const router = require('koa-router')();
 const {solve} = require('../../utils/path');
-const {statics} = require('../../manifest.dsl');
+const {statics} = require('../../utils/manifest.dsl');
 
 function static(dir) {
     dir = removeSlash(dir);
