@@ -1,4 +1,4 @@
-## Fronted End Starter
+# Fronted End Starter
 
 > A lighter Starter No complex config
 
