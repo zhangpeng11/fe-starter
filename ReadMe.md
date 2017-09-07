@@ -17,11 +17,6 @@ npm run dev:build
 npm run dev:server
 ```
 
-## Directory Introduction
-## Dll Split
-## Entries
-## Code Quality
-## Unit Test
 ## Convention
 * console
   * __DO NOT USE__ `console.log`
