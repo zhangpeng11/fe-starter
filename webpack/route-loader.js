@@ -5,11 +5,15 @@ module.exports = function(content) {
   let js = {};
 
   try {
-    js = eval(content)
+
+    js = eval(content);
+
+    if (!checkSchema(js)) throw new Error('routes.dsl schema not correct');
+
   } catch(e) {
-    // todo
-    // route format schema check
-    console.warn(`WARNING: content must be javascript`);
+
+    js = {};
+    console.warn(`WARNING: `, e);
   }
 
   Object.keys(js).forEach(pathname => {
@@ -20,11 +24,18 @@ module.exports = function(content) {
     } else if (typeof opts.page == 'string') {
       opts.page = makeAsyncImportTpl(path.basename(opts.page), opts.page);
     } else {
-      console.warn(`should have page information in every path`);
+      console.warn(`WARNING: should define page information got => `, opts);
     }
   })
 
   return replaceAll(`module.exports = ${toString(js)}`);
+}
+
+function checkSchema(any) {
+  if (!any) return false;
+  if (typeof any != 'object') return false;
+
+  return true;
 }
 
 function replaceAll(string) {

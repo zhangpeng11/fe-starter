@@ -39,7 +39,7 @@ function makeHtmlTpl(options = {}) {
 
     let injectedLib = '';
     let injectedBusiness = '';
-    let injectedStyle = ''; // todo css solution
+    let injectedStyle = '';
     let injectedApp = '';
 
     if (inline) {
@@ -52,7 +52,6 @@ function makeHtmlTpl(options = {}) {
         injectedApp = `<script>${app}</script>`;
     } else {
         injectedLib = `<script src="/${statics}/${libfile}"></script>`;
-        // todo has business file
         // injectedBusiness = `<script src="/${statics}/${businessfile}"></script>`;
         injectedApp = `<script src="/${statics}/${appFile}"></script>`;
     }

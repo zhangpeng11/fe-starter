@@ -24,7 +24,7 @@ module.exports = merge(base, {
 });
 
 function getDepends() {
-    // consider todo
+    // consider do belows
     // firendly tips tell user should re-build dll
     // 1. package.json changed
     // 2. dll.config.js changed

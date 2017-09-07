@@ -37,3 +37,9 @@ npm run dev:server
 * webpack production config
 * e2e test framework
 * tslint
+* css solution
+* load ${business}.file advance
+* check should rebuild dll.js
+* check routes.dsl format
+
+

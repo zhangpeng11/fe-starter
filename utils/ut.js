@@ -80,15 +80,15 @@ function afterAll() {
   cleanCases();
   cleanErrors();
 
-  isNode ? exit1() : sendExitMsg();
+  isNode ? exit() : sendExitMsg();
 }
 
-function exit1() {
-  // todo
+function exit() {
+
 }
 
 function sendExitMsg() {
-  // todo
+
 }
 
 function reportResult() {
