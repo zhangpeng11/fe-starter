@@ -1,23 +1,28 @@
-## Fronted-End Starter
+## Fronted End Starter
 
-> A lighter Starter, no complex config.
+> A lighter Starter No complex config
+
+## Keywords
 
 * TypeScript
-* React + Mobx
+* React
+* Mobx
+* Koa
+* Webpack
 
-### Development
+## Development
 
 ```
 npm run dev:build
 npm run dev:server
 ```
 
-### Directory Introduction
-### Dll Split
-### Entries
-### Code Quality
-### Unit Test
-### Convention
+## Directory Introduction
+## Dll Split
+## Entries
+## Code Quality
+## Unit Test
+## Convention
 * console
   * __DO NOT USE__ `console.log`
   * `console.warn` as debug info
@@ -30,8 +35,7 @@ npm run dev:server
   * report to error handles platform like `sentry`
 
 
-### TODO
-
+## TODO
 * manifest should remove to utils/index.js
 * generate file should move to statics/
 * async router research

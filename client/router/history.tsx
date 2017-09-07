@@ -49,7 +49,6 @@ export default class HistoryRouter {
     this.conflict = false;
     this.current = null;
     this.routes = routes;
-    this.fromEntry = {};
     this.url = new UrlParser(location.href);
 
     window.addEventListener('load', () => this.register());
@@ -61,24 +60,30 @@ export default class HistoryRouter {
 
   push(path: Path) {
     const newUrl = this.url.update(path);
+
+    if (this.url == newUrl) return; // same url do nothing
+
     const route = this.match(newUrl) as RouteOptions;
 
     if (route) {
       this.runHooks(route.beforeLeave, () => {
         history.pushState(null, '', newUrl.path);
-        this.register();
+        this.transition(route, newUrl);
       });
     }
   }
 
   replace(path: Path) {
     const newUrl = this.url.update(path);
+
+    if (this.url == newUrl) return; // same url do nothing
+
     const route = this.match(newUrl) as RouteOptions;
 
     if (route) {
       this.runHooks(route.beforeLeave, () => {
         history.replaceState(null, '', newUrl.path);
-        this.register();
+        this.transition(route, newUrl);
       })
     }
   }
@@ -87,7 +92,6 @@ export default class HistoryRouter {
   private url: UrlParser;
   private current: Route | null;
   private routes: Routes;
-  private fromEntry: {[k: string]: boolean};
 
   private makeConflict() { this.conflict = true }
   private solveConflict() { this.conflict = false }
@@ -102,13 +106,7 @@ export default class HistoryRouter {
       }
     }
 
-    this.appendEntry(url.path); // if not match as entry
-
     return null;
-  }
-
-  private appendEntry(path: string) {
-    this.fromEntry[path] = true;
   }
 
   private async mount(route: Route) {
@@ -123,17 +121,24 @@ export default class HistoryRouter {
   }
 
   private register() {
-    if (this.sameHref() && this.current) return;
     if (this.conflict) return this.solveConflict();
 
-    const url = this.sameHref() ? this.url : new UrlParser(location.href);
-    const route = this.current = this.match(url) as RouteOptions;
+    const url = new UrlParser(location.href);
+    const route = this.match(url);
 
     if (route) {
-      const action = () => this.mount(route);
-      const reject = () => this.rollback();
-      this.runHooks(route.beforeEnter, action, reject);
+      this.transition(route, url);
     }
+  }
+
+  private transition(route: Route, url: UrlParser) {
+    const reject = () => this.rollback();
+    const action = () => {
+      this.mount(route);
+      this.url = url;
+      this.current = route;
+    }
+    this.runHooks((route as RouteOptions).beforeEnter, action, reject);
   }
 
   /** get React ComponentClass */
@@ -153,14 +158,16 @@ export default class HistoryRouter {
   }
 
   private rollback() {
-    if (this.sameHref()) {
+    if (!this.sameHref()) {
       this.makeConflict();
       history.back(); // will trigger popstate event
     }
   }
 
-  private sameHref() {
-    return this.url.href == location.href;
+  private sameHref(href?: string) {
+    return href
+      ? this.url.href == href
+      : this.url.href == location.href;
   }
 
   /** if hook not prevented return true */
@@ -215,7 +222,9 @@ export class UrlParser {
     const pathStr = this.genetatePath(path);
     const url = new URL(pathStr, this.url.origin);
 
-    return new UrlParser(url);
+    return url.href == this.href
+      ? this
+      : new UrlParser(url);
   }
 
   private parserQuery() {
@@ -262,13 +271,13 @@ function encode(s: string) {
 
 /**
  * = Test Cases ==============================================================
- * 1. push to correct page
- * 2. replace to correct page
- * 3. DO 1 then DO 1
- * 4. DO 1 then DO 2
- * 5. DO 2 then DO 1
- * 6. DO 2 then DO 2
- * 7. DO 1-6 then back to start point
+ * 1. push to correct page ✓
+ * 2. replace to correct page ✓
+ * 3. DO 1 then DO 1 ✓
+ * 4. DO 1 then DO 2 ✓
+ * 5. DO 2 then DO 1 ✓
+ * 6. DO 2 then DO 2 ✓
+ * 7. DO 1-6 then back to start point ✓
  * 8. push to unregister path => path should changed but page should not change
  * 9. DO 8 then click back then DO 8 => result = result 8
  * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page
