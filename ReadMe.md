@@ -13,8 +13,12 @@
 ## Development
 
 ```
-npm run dev:build
-npm run dev:server
+npm run dll # only once
+npm run build
+npm run server
+
+# shorthand but take much time
+npm run dev
 ```
 
 ## Convention
@@ -31,15 +35,16 @@ npm run dev:server
 
 
 ## TODO
-* manifest should remove to utils/index.js
-* generate file should move to statics/
-* async router research
-* webpack production config
-* e2e test framework
-* tslint
-* css solution
-* load ${business}.file advance
-* check should rebuild dll.js
-* check routes.dsl format
+* P0 unit test history router
+* P0 tslint
+* P0 e2e test framework
+* P0 css solution
+* P1 fs, path => node.js
+* P1 webpack production config
+* P1 load ${business}.file advance
+* P2 check should rebuild dll.js
+* P2 check routes.dsl format
+* P2 server rendering
+* P2 pagestate
 
 
