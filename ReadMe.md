@@ -1,6 +1,6 @@
 # Fronted End Starter
 
-> Lighter & No Complex Config Starter
+> Lighter & No complex config Starter
 
 ## Keywords
 
@@ -25,9 +25,9 @@ npm run dev:server
   * `console.error` as must handled error
 
 * throw
-  * if you can sure ignore like `try { JSON.parse(data) } catch(e) {} `
-  * continue throw like `try { await getUserId() } catch(e) { throw e } `
-  * report to error handles platform like `sentry`
+  * just ignore, like `try { JSON.parse(data) } catch(e) {} `
+  * continue throw, like `try { await getUserId() } catch(e) { throw e } `
+  * report to errors handle platform, like `sentry`
 
 
 ## TODO
