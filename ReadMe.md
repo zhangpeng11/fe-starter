@@ -13,12 +13,11 @@
 ## Development
 
 ```
-npm run dll # only once
+yarn install
+
+npm run dll  # only once
 npm run build
 npm run server
-
-# shorthand but take much time
-npm run dev
 ```
 
 ## Convention
@@ -39,6 +38,7 @@ npm run dev
 * P0 tslint
 * P0 e2e test framework
 * P0 css solution
+* P0 publish blog as readMe prototype
 * P1 fs, path => node.js
 * P1 webpack production config
 * P1 load ${business}.file advance
