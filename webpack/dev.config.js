@@ -8,8 +8,8 @@ const plugins = [];
 
 if (depends) {
     plugins.push(new webpack.DllReferencePlugin({
-        context: __dirname,
-        manifest: require(`${'./depends.hash.json'}`),
+        context: rootdir,
+        manifest: depends,
     }));
 }
 
@@ -24,7 +24,7 @@ module.exports = merge(base, {
 });
 
 function getDepends() {
-    // todo
+    // consider todo
     // firendly tips tell user should re-build dll
     // 1. package.json changed
     // 2. dll.config.js changed
