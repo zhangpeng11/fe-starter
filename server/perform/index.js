@@ -5,7 +5,7 @@ module.exports = async function(ctx, next) {
     const start = new Date();
 
     await next();
-    
+
     const end = new Date();
     const duration = end.getTime() - start.getTime();
 
@@ -13,5 +13,5 @@ module.exports = async function(ctx, next) {
 }
 
 function log(duration, ctx) {
-    console.log(`${ctx.path} ${duration}ms`);
+    console.info(`${ctx.path} ${duration}ms`);
 }

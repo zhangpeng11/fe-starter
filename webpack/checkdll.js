@@ -17,7 +17,7 @@ if (hasChanged()) {
 
 function hasChanged() {
     const last = read(solve(PHJ));
-    
+
     // first time no package.hash.json
     if (!last) {
         change(); return;
@@ -31,7 +31,7 @@ function hasChanged() {
         change(); return;
     }
 
-    console.log('~ dll nothing changed');
+    console.info('~ dll nothing changed');
 }
 
 function change() {
@@ -40,7 +40,7 @@ function change() {
 }
 
 function build() {
-    console.log('~ building...');
+    console.info('~ building...');
     exec('npm run dll',  printio);
 }
 

@@ -7,10 +7,8 @@ window.__ReactDOMRender__ = function() {
 }
 
 ReactDOM.render = function () {
-  if (arguments[0] && arguments[1]) {
-    logs.pop();
-    logs.push([arguments[0], arguments[1]]);
-  }
+  logs.pop();
+  logs.push([arguments[0], arguments[1]]);
 
   return render.apply(this, arguments);
 }

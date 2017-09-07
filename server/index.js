@@ -10,7 +10,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 function printEnv() {
-    console.log(`${prefix} server in ${process.env.NODE_ENV} mode`);
+    console.info(`${prefix} server in ${process.env.NODE_ENV} mode`);
 }
 
 function dev(req, res) {
@@ -20,7 +20,7 @@ function dev(req, res) {
 
 function printTarget() {
     printEnv();
-    console.log(`${prefix} http://localhost:${port}`);
+    console.info(`${prefix} http://localhost:${port}`);
 }
 
 function clearCache() {

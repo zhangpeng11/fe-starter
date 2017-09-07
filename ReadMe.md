@@ -35,3 +35,4 @@ npm run dev:server
 * manifest should remove to utils/index.js
 * generate file should move to statics/
 * async router research
+* webpack production config
