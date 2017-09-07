@@ -37,3 +37,4 @@ npm run dev:server
 * async router research
 * webpack production config
 * e2e test framework
+* tslint

@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const resolve = require('./resolve');
-const {solve} = require('../utils/path');
+const {solve, rootdir} = require('../utils/path');
 const {statics} = require('../utils/manifest.dsl');
 
 // = depend lib/framworks ========
@@ -19,13 +18,11 @@ module.exports = {
 		library: "[name]"
     },
 
-    resolve,
-
     plugins: [
         new webpack.DllPlugin({
-            path: path.resolve(__dirname, 'depends.hash.json'),
+            path: path.resolve(rootdir, `${statics}/depends.hash.json`),
             name: '[name]',
-            context: __dirname
+            context: rootdir
         })
     ]
 }

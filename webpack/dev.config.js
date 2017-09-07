@@ -1,53 +1,41 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const base = require('./base.config.js');
-const resolve = require('./resolve');
-const {solve} = require('../utils/path');
+const {solve, rootdir} = require('../utils/path');
+const {statics} = require('../utils/manifest.dsl');
+const depends = getDepends();
+const plugins = [];
+
+if (depends) {
+    plugins.push(new webpack.DllReferencePlugin({
+        context: __dirname,
+        manifest: require(`${'./depends.hash.json'}`),
+    }));
+}
 
 module.exports = merge(base, {
     cache: true,
 
     entry: {
-        'app': solve('./client/main.ts')
+        app: solve('./client/main.ts')
     },
 
-    plugins: [
-        new webpack.DllReferencePlugin({
-            context: __dirname,
-            manifest: require('./depends.hash.json'),
-        }),
-        // dev 环境不用优化
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: 'webpack.runtime',
-        //     names: ['runtime']
-        // }),
-        // new BundlePlugin()
-    ]
+    plugins,
 });
 
+function getDepends() {
+    // todo
+    // firendly tips tell user should re-build dll
+    // 1. package.json changed
+    // 2. dll.config.js changed
+    // 3. statics/dll.js not built
+    try {
+        return require(`../${statics}/depends.hash.json`);
+    } catch(e) {
+        const warning = `WARNING: you may don't build dll, try run "npm run dll".\n`
+        console.warn('\x1b[31m%s\x1b[0m', warning);
+        return null;
+    }
+}
+
 console.info('~ dev building...');
-
-/** merge files and delete fragment */
-// function BundlePlugin() {};
-
-// function bundle(compilation, callback) {
-//     const files = ['webpack.runtime.js', 'polyfill.iife.js'];
-//     const bundled = files.reduce((content, filename) => {
-//         return content += compilation.assets[filename].source();
-//     }, '');
-
-//     compilation.assets['bundle.js'] = {
-//         source: function () {
-//             return bundled;
-//         },
-//         size: function () { return bundled.length; }
-//     }
-
-//     files.forEach(filename => delete compilation.assets[filename])
-
-//     callback();
-// }
-
-// BundlePlugin.prototype.apply = function (compiler) {
-//     compiler.plugin('emit', bundle);
-// };
