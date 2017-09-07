@@ -1,14 +1,20 @@
 import * as React from 'react'
-import * as ReactDOM from "react-dom"
 import router from '../../router'
 
-class About extends React.Component {
+export default class About extends React.Component {
     render() {
-        return <button onClick={this.gotoSubmit}> 我们来自...</button>;
+        return <div>
+            <button onClick={() => this.gotoSubmit()}> push to submit page </button>
+            <button onClick={() => this.replaceSubmit()}> replace to submit page </button>
+        </div>;
     }
 
-    gotoSubmit = () => {
-        router.push('/submit')
+    gotoSubmit() {
+        router.push('/submit');
+    }
+
+    replaceSubmit() {
+        router.replace('/submit');
     }
 
     componentDidMount() {
@@ -16,7 +22,3 @@ class About extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <About></About>,
-    document.getElementById("root")
-)

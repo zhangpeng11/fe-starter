@@ -31,9 +31,6 @@
 import * as React from 'react'
 import * as ReactDOM from "react-dom"
 
-declare const __ReactDOMRender__: Function;
-declare const __ReactRenderLogs__: any[];
-
 export type RouteOptions = {
   page: React.ComponentClass;
   beforeEnter?: Function;
@@ -41,13 +38,13 @@ export type RouteOptions = {
   props?: Function;
 }
 
-export type Route = React.ComponentClass | RouteOptions;
+export type Route = React.ComponentClass | RouteOptions | Function/* Actual want arrow function here */;
 
 export type Routes = {
   [path: string]: Route;
 }
 
-export default class ReactRouter {
+export default class HistoryRouter {
   constructor(routes: Routes) {
     this.conflict = false;
     this.current = null;
@@ -56,7 +53,10 @@ export default class ReactRouter {
     this.url = new UrlParser(location.href);
 
     window.addEventListener('load', () => this.register());
-    window.addEventListener('popstate', () => this.onpopstate());
+
+    // 1. from user click back/forward
+    // 2. from router api push/replace
+    window.addEventListener('popstate', () => this.register());
   }
 
   push(path: Path) {
@@ -66,7 +66,7 @@ export default class ReactRouter {
     if (route) {
       this.runHooks(route.beforeLeave, () => {
         history.pushState(null, '', newUrl.path);
-        this.onpopstate();
+        this.register();
       });
     }
   }
@@ -78,12 +78,11 @@ export default class ReactRouter {
     if (route) {
       this.runHooks(route.beforeLeave, () => {
         history.replaceState(null, '', newUrl.path);
-        this.onpopstate();
+        this.register();
       })
     }
   }
 
-  // private oldHref: string;
   private conflict: boolean;
   private url: UrlParser;
   private current: Route | null;
@@ -92,19 +91,6 @@ export default class ReactRouter {
 
   private makeConflict() { this.conflict = true }
   private solveConflict() { this.conflict = false }
-
-  private onpopstate() {
-    this.register();
-
-    if (this.fromEntry[location.pathname]) {
-      const logs = __ReactRenderLogs__;
-      const last = logs.pop();
-
-      if (last) {
-          ReactDOM.render(last[0], last[1]);
-      }
-    }
-  }
 
   /** if current path mathed return matched route */
   private match(url: UrlParser) {
@@ -125,23 +111,22 @@ export default class ReactRouter {
     this.fromEntry[path] = true;
   }
 
-  private mount(route: Route) {
-    const Component = this.getComponent(route);
+  private async mount(route: Route) {
+    const Component = await this.getComponent(route);
     const tmp = (route as RouteOptions).props;
     const props = typeof tmp == 'function' ? tmp() : {};
 
-    __ReactDOMRender__.call(
-      ReactDOM,
+    ReactDOM.render(
       <Component {...(props || {}) }></Component>,
       document.getElementById("root")
     );
   }
 
   private register() {
-    if (this.url.href == location.href) return;
+    if (this.sameHref() && this.current) return;
     if (this.conflict) return this.solveConflict();
 
-    const url = this.url = new UrlParser(location.href);
+    const url = this.sameHref() ? this.url : new UrlParser(location.href);
     const route = this.current = this.match(url) as RouteOptions;
 
     if (route) {
@@ -152,20 +137,29 @@ export default class ReactRouter {
   }
 
   /** get React ComponentClass */
-  private getComponent(route: Route) {
+  private async getComponent(route: Route) {
     const opts = route as RouteOptions;
+    const ReactClass = route as React.ComponentClass;
+    const asyncComponent = route as Function;
+    const isReactClass = ReactClass.prototype && ReactClass.prototype.render;
 
-    return opts.page ? opts.page : (route as React.ComponentClass);
+    if (isReactClass) {
+      return ReactClass;
+    } else if (opts.page) {
+      return opts.page;
+    } else {
+      return (await asyncComponent()).default as React.ComponentClass;
+    }
   }
 
   private rollback() {
-    if (this.isUnnecessary) {
+    if (this.sameHref()) {
       this.makeConflict();
       history.back(); // will trigger popstate event
     }
   }
 
-  private isUnnecessary() {
+  private sameHref() {
     return this.url.href == location.href;
   }
 
@@ -265,3 +259,19 @@ function decode(s: string) {
 function encode(s: string) {
   return s === undefined ? '' : encodeURIComponent(s);
 }
+
+/**
+ * = Test Cases ==============================================================
+ * 1. push to correct page
+ * 2. replace to correct page
+ * 3. DO 1 then DO 1
+ * 4. DO 1 then DO 2
+ * 5. DO 2 then DO 1
+ * 6. DO 2 then DO 2
+ * 7. DO 1-6 then back to start point
+ * 8. push to unregister path => path should changed but page should not change
+ * 9. DO 8 then click back then DO 8 => result = result 8
+ * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page
+ * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page
+ * * = Test Cases ==============================================================
+ */

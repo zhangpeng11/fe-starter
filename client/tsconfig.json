@@ -3,9 +3,10 @@
         "module": "commonjs",
         "target": "es5",
         "jsx": "react",
-        "allowJs":true,
+        "allowJs": true,
         "noImplicitAny": true,
         "noUnusedLocals": true,
-        "strictNullChecks":true
+        "strictNullChecks": true,
+        "lib": ["dom", "es2015"]
     }
 }

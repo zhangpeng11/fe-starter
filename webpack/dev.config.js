@@ -8,7 +8,7 @@ module.exports = merge(base, {
     cache: true,
 
     entry: {
-        'polyfill.iife': solve('./client/polyfill.iife')
+        'app': solve('./client/main.ts')
     },
 
     plugins: [

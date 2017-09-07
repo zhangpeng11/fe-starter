@@ -1,6 +1,6 @@
 const {solve} = require('../utils/path');
 const {entries, statics} = require('../manifest.dsl');
-const {getEntries} = require('../utils/fs');
+// const {getEntries} = require('../utils/fs');
 const tsconf = require(solve('client/tsconfig.json'));
 
 
@@ -9,7 +9,7 @@ const rules = [
 ]
 
 module.exports = {
-    entry: makeEntryFiles(),
+    // entry: makeEntryFiles(),
 
     output: {
         path: solve(statics),
@@ -24,13 +24,13 @@ module.exports = {
     }
 }
 
-function makeEntryFiles() {
-    const dir = solve(entries);
-    const ret = {};
+// function makeEntryFiles() {
+//     const dir = solve(entries);
+//     const ret = {};
 
-    getEntries(dir).forEach(entry => {
-        ret[entry] = solve(dir, `${entry}/index.tsx`);
-    });
+//     getEntries(dir).forEach(entry => {
+//         ret[entry] = solve(dir, `${entry}/index.tsx`);
+//     });
 
-    return ret;
-}
+//     return ret;
+// }

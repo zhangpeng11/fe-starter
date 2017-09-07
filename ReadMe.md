@@ -36,3 +36,4 @@ npm run dev:server
 * generate file should move to statics/
 * async router research
 * webpack production config
+* e2e test framework

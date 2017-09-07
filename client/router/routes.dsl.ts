@@ -1,5 +1,5 @@
-import Submit from '../pages/submit'
-
 export default {
-    '/submit': Submit
+    '/': () => import('../entries/home'),
+    '/submit': () => import('../entries/submit'),
+    '/about': () => import('../entries/about'),
 }

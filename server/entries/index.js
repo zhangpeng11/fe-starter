@@ -32,25 +32,26 @@ function makeHtmlTpl(options = {}) {
     const staticsDir = solve(statics);
     const libfile = `${dll}.js`;
     const businessfile = `${entry}.js`;
-    const polyfill = 'polyfill.iife.js';
+    const appFile = 'app.js';
 
     let injectedLib = '';
     let injectedBusiness = '';
-    let injectedStyle = '';
-    let injectedIIFE = '';
+    let injectedStyle = ''; // todo css solution
+    let injectedApp = '';
 
     if (inline) {
         const lib = content(solve(staticsDir, libfile));
         const business = content(solve(staticsDir, businessfile));
-        const iife = content(solve(staticsDir, polyfill));
+        const app = content(solve(staticsDir, appFile));
 
         injectedLib = `<script>${lib}</script>`;
         injectedBusiness = `<script>${business}</script>`;
-        injectedIIFE = `<script>${iife}</script>`;
+        injectedApp = `<script>${app}</script>`;
     } else {
         injectedLib = `<script src="/${statics}/${libfile}"></script>`;
-        injectedBusiness = `<script src="/${statics}/${businessfile}"></script>`;
-        injectedIIFE = `<script src="/${statics}/${polyfill}"></script>`;
+        // todo has business file
+        // injectedBusiness = `<script src="/${statics}/${businessfile}"></script>`;
+        injectedApp = `<script src="/${statics}/${appFile}"></script>`;
     }
 
     return `<!DOCTYPE html>
@@ -60,7 +61,7 @@ function makeHtmlTpl(options = {}) {
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <title>${title}</title>
             ${injectedLib}
-            ${injectedIIFE}
+            ${injectedApp}
         </head>
         <body>
             <div id="root"></div>
