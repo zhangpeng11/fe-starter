@@ -1,4 +1,5 @@
 const path = require('path');
+const vm = require('vm');
 const fix = '@';
 
 module.exports = function(content) {
@@ -6,7 +7,7 @@ module.exports = function(content) {
 
   try {
 
-    js = eval(content);
+    js = evalNodejs(content);
 
     if (!checkSchema(js)) throw new Error('routes.dsl schema not correct');
 
@@ -29,6 +30,16 @@ module.exports = function(content) {
   })
 
   return replaceAll(`module.exports = ${toString(js)}`);
+}
+
+function evalNodejs(src) {
+  const m = require('module');
+  const $m = {exports: {}};
+  const $e = $m.exports;
+
+  vm.runInThisContext(m.wrap(src))($e, require, $m);
+
+  return $m.exports;
 }
 
 function checkSchema(any) {

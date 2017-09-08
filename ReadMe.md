@@ -22,7 +22,6 @@ npm run server
 
 ## Convention
 * console
-  * __DO NOT USE__ `console.log`
   * `console.warn` as debug info
   * `console.info` as logs
   * `console.error` as must handled error
@@ -32,8 +31,13 @@ npm run server
   * continue throw, like `try { await getUserId() } catch(e) { throw e } `
   * report to errors handle platform, like `sentry`
 
+* __DO NOT USE__
+  * `console.log`
+  * `eval`
+
 
 ## TODO
+* P0 history router support alias
 * P0 unit test history router
 * P0 tslint
 * P0 e2e test framework

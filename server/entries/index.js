@@ -73,8 +73,4 @@ function makeHtmlTpl(options = {}) {
     </html>`
 }
 
-function makeScript(content) {
-
-}
-
 module.exports = router.routes();

@@ -282,5 +282,7 @@ function encode(s: string) {
  * 9. DO 8 then click back then DO 8 => result = result 8
  * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page
  * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page
+ * 12. beforeEnter args(from, to, prevent) should be correct
+ * 13. beforeLeave args(from, to, prevent) should be correct
  * * = Test Cases ==============================================================
  */
