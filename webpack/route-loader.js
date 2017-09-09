@@ -29,15 +29,15 @@ module.exports = function(content) {
     }
   })
 
-  return replaceAll(`module.exports = ${toString(js)}`);
+  return repalceChars(`module.exports = ${toString(js)}`);
 }
 
 function evalNodejs(src) {
-  const m = require('module');
   const $m = {exports: {}};
   const $e = $m.exports;
+  const code = require('module').wrap(src);
 
-  vm.runInThisContext(m.wrap(src))($e, require, $m);
+  vm.runInThisContext(code)($e, require, $m);
 
   return $m.exports;
 }
@@ -49,11 +49,14 @@ function checkSchema(any) {
   return true;
 }
 
-function replaceAll(string) {
+function repalceChars(string) {
   return string
     .replace(new RegExp(`"${fix}`, 'g'), '')
-    .replace(new RegExp(`${fix}"`, 'g'), '');
+    .replace(new RegExp(`${fix}"`, 'g'), '')
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\r")
 }
+
 
 function makeAsyncImportTpl(chunk, package) {
   return `${fix}() => import(/* webpackChunkName: '${chunk}' */'${package}')${fix}`;

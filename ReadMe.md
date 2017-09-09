@@ -37,7 +37,6 @@ npm run server
 
 
 ## TODO
-* P0 history router support alias
 * P0 unit test history router
 * P0 tslint
 * P0 e2e test framework
