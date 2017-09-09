@@ -6,7 +6,8 @@ module.exports = {
     },
     '/submit': {
         page: '../client/entries/submit',
-        beforeEnter: (prevent) => {
+        beforeEnter: (from, to, prevent) => {
+            console.info(from, to);
             const tmp = Math.random();
 
             if (tmp != 0.5) {

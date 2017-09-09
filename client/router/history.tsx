@@ -45,9 +45,20 @@ export type Routes = {
   [path: string]: Route;
 }
 
+export type RouteArg = {
+  path: string;
+  query: Query;
+  hash: string;
+}
+
+type hookArgs = {
+  hook: Function | undefined;
+  from: UrlParser,
+  to: UrlParser
+}
+
 export default class HistoryRouter {
   constructor(routes: Routes) {
-    this.conflict = false;
     this.current = null;
     this.routes = routes;
     this.url = new UrlParser(location.href);
@@ -61,20 +72,16 @@ export default class HistoryRouter {
   }
 
   push(path: Path) {
-    this.changeHistory(path);
+    this.changeHistory(path, false);
   }
 
   replace(path: Path) {
     this.changeHistory(path, true);
   }
 
-  private conflict: boolean;
   private url: UrlParser;
   private current: Route | null;
   private routes: Routes;
-
-  private makeConflict() { this.conflict = true }
-  private solveConflict() { this.conflict = false }
 
   /** Attention Side effect Changed `this.routes` */
   private initRoutes() {
@@ -87,35 +94,40 @@ export default class HistoryRouter {
     });
   }
 
-  private changeHistory(path: Path, replace?: boolean) {
+  private changeHistory(path: Path, replace: boolean) {
     const newUrl = this.url.update(path);
 
-    if (this.url == newUrl) return; // same url do nothing
+    // same url do nothing
+    if (this.url == newUrl) {
+      return console.warn('The URL just same');
+    }
 
     const route = this.match(newUrl) as RouteOptions;
     const current = this.current as RouteOptions;
 
     if (route) {
-      this.runHooks(current.beforeLeave, () => {
+      const args = {
+        hook: current.beforeLeave,
+        from: this.url,
+        to: newUrl
+      };
+
+      this.runHooks2(args, () => {
         const change = replace
           ? history.replaceState
           : history.pushState;
         change.call(history, null, '', newUrl.path);
-        this.transition(route, newUrl);
+        this.transition(route, newUrl, replace);
       })
     } else {
-      console.error(`Did you register route correct ? got path "${path}"`);
+      console.error('Did you register route correct ? got', path);
     }
   }
 
   /** if current path mathed return matched route */
   private match(url: UrlParser) {
     for (let path in this.routes) {
-      const curPath = url.path;
-      const possiblePath = path.slice(0, -1);
-
-      // path like `/a` & `/a/` is ok with route['/a']
-      if (path === curPath || possiblePath === url.path) {
+      if (isPathSame(path, url.path)) {
         return this.routes[path];
       }
     }
@@ -135,24 +147,28 @@ export default class HistoryRouter {
   }
 
   private register() {
-    if (this.conflict) return this.solveConflict();
-
     const url = new UrlParser(location.href);
     const route = this.match(url);
 
     if (route) {
-      this.transition(route, url);
+      this.transition(route, url, false);
     }
   }
 
-  private transition(route: Route, url: UrlParser) {
-    const reject = () => this.rollback();
+  private transition(route: Route, url: UrlParser, replaced: boolean) {
+    const reject = () => this.rollback(replaced);
     const action = () => {
       this.mount(route);
       this.url = url;
       this.current = route;
     }
-    this.runHooks((route as RouteOptions).beforeEnter, action, reject);
+    const args = {
+      hook: (route as RouteOptions).beforeEnter,
+      from: this.url,
+      to: url
+    }
+
+    this.runHooks2(args, action, reject);
   }
 
   /** get React ComponentClass */
@@ -171,28 +187,23 @@ export default class HistoryRouter {
     return ret;
   }
 
-  private rollback() {
-    if (!this.sameHref()) {
-      this.makeConflict();
-      history.back(); // will trigger popstate event
-    }
+  private rollback(repalced: boolean) {
+    repalced
+      ? history.replaceState(null, '', this.url.href)
+      : history.back();
   }
 
-  private sameHref(href?: string) {
-    return href
-      ? this.url.href == href
-      : this.url.href == location.href;
-  }
-
-  /** if hook not prevented return true */
-  private runHooks(hook: Function | undefined, action: Function, reject = () => { }) {
+  private runHooks2(args: hookArgs, action: Function, reject?: Function) {
+    let hook = args.hook;
+    let from = args.from;
+    let to = args.to;
     let prevented = false;
     let prevent = () => {
       prevented = true;
     }
 
-    hook && hook(prevent);
-    prevented ? reject() : action();
+    hook && hook(from, to, prevent);
+    prevented ? (reject && reject()) : action();
   }
 }
 
@@ -202,7 +213,7 @@ export type Query = {
 
 export type PathOptions = {
   path: string;
-  query: Query;
+  query?: Query;
 }
 
 export type Path = string | PathOptions;
@@ -262,17 +273,27 @@ export class UrlParser {
 
     if (opts.path) {
       const search = [] as string[];
+      const query = opts.query || {};
 
-      Object.keys(opts.query).forEach(key => {
-        const value = encode(opts.query[key] as string);
+      Object.keys(query).forEach(key => {
+        const value = encode(query[key] as string);
         search.push(`${key}=${value}`);
       });
 
-      return `${path}/?${search.join('&')}`;
+      return `${opts.path}/?${search.join('&')}`;
     } else {
       return path as string;
     }
   }
+}
+
+// path like `/a` & `/a/` is thought equal
+function isPathSame(path1: string, path2: string) {
+  const possibles1 = [path1, path1.slice(0, -1)];
+  const possibles2 = [path2, path2.slice(0, -1)];
+  const tmp1 = possibles1.indexOf(path2) != -1;
+  const tmp2 = possibles2.indexOf(path1) != -1;
+  return tmp1 || tmp2;
 }
 
 function decode(s: string) {
@@ -295,7 +316,7 @@ function encode(s: string) {
  * 8. push to unregister path => print warning ✓
  * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page ✓
  * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page ✓
- * 12. beforeEnter args(from, to, prevent) should be correct
- * 13. beforeLeave args(from, to, prevent) should be correct
+ * 12. beforeEnter args(from, to, prevent) should be correct ✓
+ * 13. beforeLeave args(from, to, prevent) should be correct ✓
  * * = Test Cases ==============================================================
  */

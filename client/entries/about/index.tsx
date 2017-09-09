@@ -11,7 +11,12 @@ export default class About extends React.Component {
     }
 
     gotoSubmit() {
-        router.push('/submit');
+        router.push({
+            path: '/submit',
+            query: {
+                a: '='
+            }
+        });
     }
 
     replaceSubmit() {
