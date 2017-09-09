@@ -59,21 +59,14 @@ export default class HistoryRouter {
   }
 
   push(path: Path) {
-    const newUrl = this.url.update(path);
-
-    if (this.url == newUrl) return; // same url do nothing
-
-    const route = this.match(newUrl) as RouteOptions;
-
-    if (route) {
-      this.runHooks(route.beforeLeave, () => {
-        history.pushState(null, '', newUrl.path);
-        this.transition(route, newUrl);
-      });
-    }
+    this.changeHistory(path);
   }
 
   replace(path: Path) {
+    this.changeHistory(path, true);
+  }
+
+  private changeHistory(path: Path, replace?: boolean) {
     const newUrl = this.url.update(path);
 
     if (this.url == newUrl) return; // same url do nothing
@@ -82,9 +75,14 @@ export default class HistoryRouter {
 
     if (route) {
       this.runHooks(route.beforeLeave, () => {
-        history.replaceState(null, '', newUrl.path);
+        const change = replace
+          ? history.replaceState
+          : history.pushState;
+        change.call(history, null, '', newUrl.path);
         this.transition(route, newUrl);
       })
+    } else {
+      console.error(`Did you register route correct ? got path "${path}"`);
     }
   }
 
@@ -278,8 +276,7 @@ function encode(s: string) {
  * 5. DO 2 then DO 1 ✓
  * 6. DO 2 then DO 2 ✓
  * 7. DO 1-6 then back to start point ✓
- * 8. push to unregister path => path should changed but page should not change
- * 9. DO 8 then click back then DO 8 => result = result 8
+ * 8. push to unregister path => print warning ✓
  * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page
  * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page
  * 12. beforeEnter args(from, to, prevent) should be correct
