@@ -93,9 +93,10 @@ export default class HistoryRouter {
     if (this.url == newUrl) return; // same url do nothing
 
     const route = this.match(newUrl) as RouteOptions;
+    const current = this.current as RouteOptions;
 
     if (route) {
-      this.runHooks(route.beforeLeave, () => {
+      this.runHooks(current.beforeLeave, () => {
         const change = replace
           ? history.replaceState
           : history.pushState;
@@ -292,8 +293,8 @@ function encode(s: string) {
  * 6. DO 2 then DO 2 ✓
  * 7. DO 1-6 then back to start point ✓
  * 8. push to unregister path => print warning ✓
- * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page
- * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page
+ * 10. DO 1 then add beforeEnter hook => next(false) cannot to the target page ✓
+ * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page ✓
  * 12. beforeEnter args(from, to, prevent) should be correct
  * 13. beforeLeave args(from, to, prevent) should be correct
  * * = Test Cases ==============================================================

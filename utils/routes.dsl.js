@@ -2,25 +2,28 @@ module.exports = {
     '/home': {
         page: '../client/entries/home',
         alias: '/',
-        beforeLeave: (prevent) => {
+
+    },
+    '/submit': {
+        page: '../client/entries/submit',
+        beforeEnter: (prevent) => {
             const tmp = Math.random();
 
-            if (tmp > 0.5) {
+            if (tmp != 0.5) {
                 prevent();
-                console.warn('cant leave cause > 0.5,', tmp);
+                console.warn('cant enter cause < 0.5,', tmp);
             }
         }
     },
-    '/submit': '../client/entries/submit',
     '/about': {
         page: '../client/entries/about',
         beforeLeave: (prevent) => {
-            const tmp = Math.random();
+            // const tmp = Math.random();
 
-            if (tmp > 0.5) {
-                prevent();
-                console.warn('cant leave cause > 0.5,', tmp);
-            }
+            // if (tmp > 0.5) {
+            //     prevent();
+            //     console.warn('cant leave cause > 0.5,', tmp);
+            // }
         }
     }
 }
