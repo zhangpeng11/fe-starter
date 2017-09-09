@@ -33,6 +33,7 @@ import * as ReactDOM from "react-dom"
 
 export type RouteOptions = {
   page: Function;
+  alias?: string;
   beforeEnter?: Function;
   beforeLeave?: Function;
   props?: Function;
@@ -50,6 +51,7 @@ export default class HistoryRouter {
     this.current = null;
     this.routes = routes;
     this.url = new UrlParser(location.href);
+    this.initRoutes();
 
     window.addEventListener('load', () => this.register());
 
@@ -64,6 +66,25 @@ export default class HistoryRouter {
 
   replace(path: Path) {
     this.changeHistory(path, true);
+  }
+
+  private conflict: boolean;
+  private url: UrlParser;
+  private current: Route | null;
+  private routes: Routes;
+
+  private makeConflict() { this.conflict = true }
+  private solveConflict() { this.conflict = false }
+
+  /** Attention Side effect Changed `this.routes` */
+  private initRoutes() {
+    Object.keys(this.routes).forEach(path => {
+      const opts = this.routes[path] as RouteOptions;
+      if (opts.alias) {
+        this.routes[opts.alias] = opts;
+        delete opts.alias;
+      }
+    });
   }
 
   private changeHistory(path: Path, replace?: boolean) {
@@ -86,20 +107,14 @@ export default class HistoryRouter {
     }
   }
 
-  private conflict: boolean;
-  private url: UrlParser;
-  private current: Route | null;
-  private routes: Routes;
-
-  private makeConflict() { this.conflict = true }
-  private solveConflict() { this.conflict = false }
-
   /** if current path mathed return matched route */
   private match(url: UrlParser) {
     for (let path in this.routes) {
-      const tmp = url.path.replace(path, '');
+      const curPath = url.path;
+      const possiblePath = path.slice(0, -1);
 
-      if (tmp === '' || tmp == '/') {
+      // path like `/a` & `/a/` is ok with route['/a']
+      if (path === curPath || possiblePath === url.path) {
         return this.routes[path];
       }
     }
