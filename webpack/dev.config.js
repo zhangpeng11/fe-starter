@@ -32,7 +32,7 @@ function getDepends() {
     try {
         return require(`../${statics}/depends.hash.json`);
     } catch(e) {
-        const warning = `WARNING: you may don't build dll, try run "npm run dll".\n`
+        const warning = 'WARNING: you may don\'t build dll, try run "npm run dll".\n';
         console.warn('\x1b[31m%s\x1b[0m', warning);
         return null;
     }

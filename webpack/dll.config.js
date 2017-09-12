@@ -14,8 +14,8 @@ module.exports = {
 
     output: {
         path: solve(statics),
-		filename: "[name].js",
-		library: "[name]"
+        filename: '[name].js',
+        library: '[name]'
     },
 
     plugins: [
@@ -25,4 +25,4 @@ module.exports = {
             context: rootdir
         })
     ]
-}
+};

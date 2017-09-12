@@ -23,7 +23,7 @@ getEntries(solve(entries)).forEach(entry => {
         await next();
 
         if (!TPL[entry]) {
-            throw new Error(`must get tpl but got: ${TPL[entry]}`)
+            throw new Error(`must get tpl but got: ${TPL[entry]}`);
         }
 
         ctx.body = TPL[entry];
@@ -39,7 +39,7 @@ function makeHtmlTpl(options = {}) {
 
     let injectedLib = '';
     let injectedBusiness = '';
-    let injectedStyle = '';
+    // let injectedStyle = '';
     let injectedApp = '';
 
     if (inline) {
@@ -70,7 +70,7 @@ function makeHtmlTpl(options = {}) {
             <div id="root2"></div>
             ${injectedBusiness}
         </body>
-    </html>`
+    </html>`;
 }
 
 module.exports = router.routes();

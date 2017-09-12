@@ -22,10 +22,10 @@
 
 class AssertionError extends Error {}
 
-const isNode = (typeof window == 'undefined')
+const isNode = (typeof window == 'undefined');
 const assert = isNode
-  ? require('assert')
-  : (expr, msg) => { if (!expr) throw new AssertionError(msg) }
+    ? require('assert')
+    : (expr, msg) => { if (!expr) throw new AssertionError(msg); };
 
 let collecting = false;
 
@@ -39,48 +39,48 @@ const cleanErrors = () => errors.length = 0;
 const shouldIgnore = process.env.NODE_ENV == 'production';
 
 const $test = (fn, msg) => {
-  if (shouldIgnore) return;
-  if (typeof fn != 'function') throw new Error('first argument must be function');
+    if (shouldIgnore) return;
+    if (typeof fn != 'function') throw new Error('first argument must be function');
 
-  cases.push({ fn, msg });
+    cases.push({ fn, msg });
 
-  !collecting && nextLoop(() => {
-    execTests()
-      .then(afterAll)
-      .catch(e => console.warn('~', e));
-  });
+    !collecting && nextLoop(() => {
+        execTests()
+            .then(afterAll)
+            .catch(e => console.warn('~', e));
+    });
 
-  startCollect();
-}
+    startCollect();
+};
 
 async function execTests() {
-  const tasks = [];
+    const tasks = [];
 
-  for (let { fn, msg } of cases) {
-    const task = thenable(fn)
-      .then(v => console.info('✓', msg))
-      .catch(e => {
-        errors.push(e);
-        console.error('x', msg, e.stack);
-      });
+    for (let { fn, msg } of cases) {
+        const task = thenable(fn)
+            .then(() => console.info('✓', msg))
+            .catch(e => {
+                errors.push(e);
+                console.error('x', msg, e.stack);
+            });
 
-    tasks.push(task);
-  }
+        tasks.push(task);
+    }
 
-  await Promise.all(tasks);
+    await Promise.all(tasks);
 }
 
 function thenable(fn) {
-  return new Promise(s => s(fn()))
+    return new Promise(s => s(fn()));
 }
 
 function afterAll() {
-  reportResult();
-  stopCollect();
-  cleanCases();
-  cleanErrors();
+    reportResult();
+    stopCollect();
+    cleanCases();
+    cleanErrors();
 
-  isNode ? exit() : sendExitMsg();
+    isNode ? exit() : sendExitMsg();
 }
 
 function exit() {
@@ -92,17 +92,17 @@ function sendExitMsg() {
 }
 
 function reportResult() {
-  results.errors = errors;
+    results.errors = errors;
 
-  const total = results.total = cases.length;
-  const passed = results.passed = cases.length - errors.length;
-  const percent = results.percent = passed / total;
+    const total = results.total = cases.length;
+    const passed = results.passed = cases.length - errors.length;
+    const percent = results.percent = passed / total;
 
-  console.info(results.description = `\nTotal ${total} Passed ${passed} (${percent*100}%)`);
+    console.info(results.description = `\nTotal ${total} Passed ${passed} (${percent*100}%)`);
 }
 
 function nextLoop(operation) {
-  setTimeout(operation, 0);
+    setTimeout(operation, 0);
 }
 
 

@@ -1,4 +1,4 @@
-const {solve} = require('./path')
+const {solve} = require('./path');
 const fs = require('fs');
 
 /**
@@ -21,7 +21,7 @@ exports.getEntries = function(dir) {
     });
 
     return entries;
-}
+};
 
 exports.isDir = isDir;
 exports.isFile = isFile;

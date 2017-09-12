@@ -18,13 +18,14 @@ module.exports = {
     },
     '/about': {
         page: '../client/entries/about',
-        beforeLeave: (prevent) => {
-            // const tmp = Math.random();
+        beforeLeave: (from, to, prevent) => {
+            console.info(from, to);
+            const tmp = Math.random();
 
-            // if (tmp > 0.5) {
-            //     prevent();
-            //     console.warn('cant leave cause > 0.5,', tmp);
-            // }
+            if (tmp > 0.5) {
+                prevent();
+                console.warn('cant leave cause > 0.5,', tmp);
+            }
         }
     }
-}
+};

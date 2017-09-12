@@ -14,4 +14,4 @@ exports.solve = function(root, dir) {
     if (!isString(dir)) throw new Error(`dir must be string type got ${dir}`);
 
     return path.join(root, dir);
-}
+};
