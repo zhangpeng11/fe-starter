@@ -9,6 +9,7 @@
   "dependencies": {
     "@types/react": "^16.0.5",
     "@types/react-dom": "^15.5.4",
+    "eslint": "^4.6.1",
     "koa": "^2.3.0",
     "koa-router": "^7.2.1",
     "mobx": "^3.2.2",

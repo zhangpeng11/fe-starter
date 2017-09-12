@@ -37,9 +37,9 @@ npm run server
 
 
 ## TODO
-* P0 unit test history router
 * P0 tslint
 * P0 e2e test framework
+* P0 unit test history router
 * P0 css solution
 * P0 publish blog as readMe prototype
 * P1 fs, path => node.js
