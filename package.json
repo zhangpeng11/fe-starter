@@ -5,7 +5,8 @@
     "build": "NODE_ENV=development webpack --config webpack/dev.config.js -w --colors",
     "server": "NODE_ENV=development node --inspect server/",
     "dev": "npm run clear; npm run dll; npm run build & npm run server",
-    "lint": "node_modules/.bin/eslint ./server ./webpack ./utils --fix"
+    "lint.client": "NODE_ENV=development webpack --config webpack/dev.config.js",
+    "lint.nodejs": "node_modules/.bin/eslint ./server ./webpack ./utils --fix"
   },
   "dependencies": {
     "@types/react": "^16.0.5",

@@ -21,6 +21,24 @@ npm run server
 ```
 
 ## Convention
+* lint
+  * `npm run lint.client && npm run lint.nodejs`
+  * pre-commit quality works, here is a sample
+  ```
+  #!/bin/sh
+
+  function check_result {
+    if [ $? -ne 0 ]; then
+      echo "\033[31m$@\033[0m"
+      exit 1
+    fi
+  }
+
+  echo "\033[32mlint ...\033[0m";
+  npm run lint.nodejs && npm run lint.client
+  check_result
+  ```
+
 * console
   * `console.warn` as debug info
   * `console.info` as logs
