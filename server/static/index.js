@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Router = require('koa-router');
 const {solve} = require('../../utils/path');
-const {statics} = require('../../utils/manifest.dsl');
+const {statics} = require('../../utils/shared');
 const router = new Router();
 
 function static(dir) {

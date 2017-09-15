@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const base = require('./base.config.js');
 const {solve, rootdir} = require('../utils/path');
-const {statics} = require('../utils/manifest.dsl');
+const {statics} = require('../utils/shared');
 const depends = getDepends();
 const plugins = [];
 

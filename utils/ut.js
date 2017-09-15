@@ -94,7 +94,7 @@ function exit() {
 
 function sendExitMsg() {
     const axios = require('axios');
-    const {testapi} = require('./manifest.dsl');
+    const {testapi} = require('./shared');
     const params = {results};
 
     axios.default.post(testapi, params);

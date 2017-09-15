@@ -1,4 +1,4 @@
-const {testapi, statics, ut} = require('../utils/manifest.dsl');
+const {testapi, statics, ut} = require('../utils/shared');
 const {exec} = require('child_process');
 const {walk, rm} = require('../utils/fs');
 const {writeFileSync, } = require('fs');

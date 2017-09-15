@@ -1,3 +1,8 @@
+/**
+ * module just for share
+ * common information
+ * not for unified solution
+ */
 module.exports = {
     'entries': 'client/entries',
     'statics': 'statics',

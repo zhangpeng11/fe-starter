@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const {solve, rootdir} = require('../utils/path');
-const {statics} = require('../utils/manifest.dsl');
+const {statics} = require('../utils/shared');
 
 // = depend lib/framworks ========
 const dll = [
