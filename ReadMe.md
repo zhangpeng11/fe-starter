@@ -55,8 +55,6 @@ npm run server
 
 
 ## TODO
-* P0 add npm run test before
-* p0 nodejs simple test framework
 * P0 unit test history router
 * P0 css solution
 * P0 publish blog as readMe prototype
@@ -68,10 +66,12 @@ npm run server
 * P2 server rendering
 * P2 pagestate
 * P2 open controled browser instance
+* ~~P0 add npm run test precommit~~
 * ~~P0 e2e test framework~~
 * ~~P0 e2e test --watch options~~
 * ~~P0 generate unit test entry file~~
 * ~~P0 History Router~~
 * ~~P0 tslint~~
+* ~~p0 nodejs simple test framework~~
 
 

@@ -8,7 +8,7 @@
     "dev": "npm run clear; npm run dll; npm run build & npm run server",
     "lint.client": "NODE_ENV=development webpack --config webpack/dev.config.js",
     "lint.nodejs": "node_modules/.bin/eslint ./server ./webpack ./utils --fix",
-    "test": "UNIT_TEST=on node server/",
+    "test": "UNIT_TEST=on node server/ && ./bin/ut.js",
     "test:watch": "NODE_ENV=development UNIT_TEST=on node server/"
   },
   "dependencies": {

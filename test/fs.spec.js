@@ -1,6 +1,5 @@
 const {walk} = require('../utils/fs');
-
-const {assert, $test} = require('./ut');
+const {assert, $test} = require('../utils/ut');
 
 $test(() => {
     assert(walk('./webpack').length == 5);
