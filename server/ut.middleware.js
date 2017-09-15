@@ -38,7 +38,7 @@ async function initUnitTestEnv() {
  */
 function openBrowser() {
     return new Promise((r, j) => {
-        exec(`open -a "Google Chrome" ${url}`, (err, stdout, stderr) => {
+        exec(`open -ga "Google Chrome" ${url}`, (err, stdout, stderr) => {
             stdout && console.info(`stdout: ${stdout}`);
             stderr && console.error(`stderr: ${stderr}`);
 
@@ -79,11 +79,7 @@ function makeHtmlTpl() {
         <title>unit test</title>
     </head>
     <body>
-      <h1>
-        Unit Test Page,
-        Please check devtool's console,
-        for more information
-      </h1>
+      <div id="tips"></div>
       <div id="root"></div>
       <script src="./${statics}/${ut}.js"></script>
     </body>

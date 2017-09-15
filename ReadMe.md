@@ -55,7 +55,6 @@ npm run server
 
 
 ## TODO
-* P0 generate unit test entry file
 * P0 e2e test --watch options
 * P0 e2e test framework
 * P0 unit test history router
@@ -69,6 +68,7 @@ npm run server
 * P2 server rendering
 * P2 pagestate
 * P2 open controled browser instance
+* ~~P0 generate unit test entry file~~
 * ~~P0 History Router~~
 * ~~P0 tslint~~
 

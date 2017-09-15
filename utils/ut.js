@@ -80,7 +80,12 @@ function afterAll() {
     cleanCases();
     cleanErrors();
 
-    isNode ? exit() : sendExitMsg();
+    if (isNode) {
+        exit();
+    } else {
+        sendExitMsg();
+        friendlyTips();
+    }
 }
 
 function exit() {
@@ -93,6 +98,25 @@ function sendExitMsg() {
     const params = {results};
 
     axios.default.post(testapi, params);
+}
+
+function friendlyTips() {
+    let tips = document.getElementById('tips'); // eslint-disable-line
+    let html = '';
+
+    if (results.errors.length) {
+        html = `<h1 style="color: red">
+            unit test failed,
+            please check devtools,
+            FYI: may be need reload
+        </h1>`;
+    } else {
+        html = `<h1 style="color: green">
+            unit test passed!
+        </h1>`;
+    }
+
+    tips.innerHTML = html;
 }
 
 function reportResult() {
