@@ -31,11 +31,11 @@ exports.walk = walk;
 exports.rm = rm;
 
 /** TODO also need support rm dir safely */
-function rm(filename) {
+function rm(filename, safe) {
     try {
         fs.unlinkSync(filename);
     } catch(e) {
-        console.warn(e);
+        return safe ? e : undefined;
     }
 }
 

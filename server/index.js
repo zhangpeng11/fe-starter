@@ -5,6 +5,7 @@ const prefix = '~';
 // = starter ===============================
 if (process.env.NODE_ENV == 'development') {
     http.createServer(dev).listen(port, printTarget);
+    alive();
 } else {
     require('./app').listen(port, printTarget);
 }
@@ -23,9 +24,18 @@ function printTarget() {
     console.info(`${prefix} http://localhost:${port}`);
 }
 
+/** just for exec at least once */
+function alive() {
+    require('./app');
+}
+
 function clearCache() {
     Object.keys(require.cache).forEach((module) => {
-        if (!module.match(/node_modules/)) {
+        const whitelist = [/node_modules/, /ut.middleware/];
+        const shouldClear = whitelist.every(i => !module.match(i));
+
+        /** remove cache not in white list */
+        if (shouldClear) {
             delete require.cache[module];
         }
     });

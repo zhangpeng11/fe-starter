@@ -105,14 +105,14 @@ function friendlyTips() {
     let html = '';
 
     if (results.errors.length) {
-        html = `<h1 style="color: red">
+        html = `<h3 style="color: red">
             unit test failed,
-            please check devtools,
-            FYI: may be need reload
-        </h1>`;
+            please check devtools
+            (may be need reload
+        </h3>`;
     } else {
         html = `<h1 style="color: green">
-            unit test passed!
+            unit test passed !
         </h1>`;
     }
 

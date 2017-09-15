@@ -8,8 +8,9 @@ const port = process.env.port;
 const url = `http://localhost:${port}${testPath}`;
 const testdir = solve('./client/test');
 const entryfile = solve('./client/test/index.ts');
+const watchMode = process.env.NODE_ENV == 'development';
 
-initUnitTestEnv();
+initUnitTestEnv().catch(e => console.error(e));
 
 module.exports = async function(ctx, next) {
     await next();
@@ -21,15 +22,28 @@ module.exports = async function(ctx, next) {
 
     if (ctx.path == testapi) {
         ctx.body = 'ok';
-        setTimeout(() => endUnitTest(ctx.request.body.results), 0);
+
+        if (!watchMode) {
+            const results = ctx.request.body.results;
+            setTimeout(() => {
+                endUnitTest(results);
+            }, 0);
+        }
+
         return;
     }
 };
 
 async function initUnitTestEnv() {
+    rm(entryfile);
+
     generateTestEntry(testdir, entryfile);
-    await buildClientCode();
-    await openBrowser();
+    try {
+        await buildClientCode();
+        await openBrowser();
+    } catch(e) {
+        throw e;
+    }
 }
 
 /**
@@ -39,8 +53,8 @@ async function initUnitTestEnv() {
 function openBrowser() {
     return new Promise((r, j) => {
         exec(`open -ga "Google Chrome" ${url}`, (err, stdout, stderr) => {
-            stdout && console.info(`stdout: ${stdout}`);
-            stderr && console.error(`stderr: ${stderr}`);
+            stdout && console.info(`~ open browser stdout:\n ${stdout}`);
+            stderr && console.error(`~ open browser stderr:\n ${stderr}`);
 
             err ? j(err) : r();
         });
@@ -49,12 +63,28 @@ function openBrowser() {
 
 function buildClientCode() {
     return new Promise((r, j) => {
-        exec('npm run build:ut', (err, stdout, stderr) => {
-            stdout && console.info(`stdout: ${stdout}`);
-            stderr && console.error(`stderr: ${stderr}`);
+        const args = watchMode ? '-- -w' : '';
+        const process = exec(`npm run build:ut ${args}`, (err, stdout, stderr) => {
+            stdout && console.info(`~ build client code stdout:\n ${stdout}`);
+            stderr && console.error(`~ build client code stderr:\n ${stderr}`);
 
             err ? j(err) : r();
         });
+
+
+
+
+        if (watchMode) {
+            process.stdout.on('data', data => console.info(data));
+            process.stderr.on('data', data => console.error(data));
+
+            /**
+             * if in watch mode slove after 5ooms
+             * cause process is in running
+             * so we cant cannot solve in end callback
+             */
+            setTimeout(r, 500);
+        }
     });
 }
 
@@ -63,7 +93,7 @@ function endUnitTest({errors, description} = {}) {
 
     if (Array.isArray(errors) && errors.length) {
         console.error(description);
-        console.info(`See more information in ${url}`);
+        console.info('See more information try `npm run test:watch`');
         process.exit(1);
     } else {
         console.info(description);
