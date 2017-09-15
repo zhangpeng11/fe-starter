@@ -60,7 +60,7 @@ async function execTests() {
         const task = thenable(fn)
             .then(() => console.info('✓', msg))
             .catch(e => {
-                errors.push(e);
+                errors.push(e.stack);
                 console.error('x', msg, e.stack);
             });
 
@@ -88,11 +88,15 @@ function exit() {
 }
 
 function sendExitMsg() {
+    const axios = require('axios');
+    const {testapi} = require('./manifest.dsl');
+    const params = {results};
 
+    axios.default.post(testapi, params);
 }
 
 function reportResult() {
-    results.errors = errors;
+    results.errors = errors.map(e => e);
 
     const total = results.total = cases.length;
     const passed = results.passed = cases.length - errors.length;

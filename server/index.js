@@ -1,12 +1,12 @@
 const http = require('http');
-const port = 3000;
+const port = process.env.port = getPort();
 const prefix = '~';
 
 // = starter ===============================
 if (process.env.NODE_ENV == 'development') {
-    http.createServer(dev).listen(3000, printTarget);
+    http.createServer(dev).listen(port, printTarget);
 } else {
-    require('./app').listen(3000, printTarget);
+    require('./app').listen(port, printTarget);
 }
 
 function printEnv() {
@@ -29,4 +29,8 @@ function clearCache() {
             delete require.cache[module];
         }
     });
+}
+
+function getPort() {
+    return process.env.UNIT_TEST == 'on' ? 8192 : 3000;
 }
