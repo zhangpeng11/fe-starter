@@ -1,8 +1,13 @@
-const {testapi, statics} = require('../utils/manifest.dsl');
+const {testapi, statics, ut} = require('../utils/manifest.dsl');
 const {exec} = require('child_process');
+const {walk, rm} = require('../utils/fs');
+const {writeFileSync, } = require('fs');
+const {solve} = require('../utils/path');
 const testPath = `/${randomString()}`;
 const port = process.env.port;
 const url = `http://localhost:${port}${testPath}`;
+const testdir = solve('./client/test');
+const entryfile = solve('./client/test/index.ts');
 
 initUnitTestEnv();
 
@@ -11,19 +16,20 @@ module.exports = async function(ctx, next) {
 
     if (ctx.path == testPath) {
         ctx.body = makeHtmlTpl();
+        return;
     }
 
     if (ctx.path == testapi) {
         ctx.body = 'ok';
-        setTimeout(() => {
-            endUnitTest(ctx.request.body.results);
-        }, 0);
+        setTimeout(() => endUnitTest(ctx.request.body.results), 0);
+        return;
     }
 };
 
-function initUnitTestEnv() {
-    generateTestEntry();
-    buildClientCode(openBrowser);
+async function initUnitTestEnv() {
+    generateTestEntry(testdir, entryfile);
+    await buildClientCode();
+    await openBrowser();
 }
 
 /**
@@ -31,27 +37,30 @@ function initUnitTestEnv() {
  * https://stackoverflow.com/questions/8085474/can-node-js-invoke-chrome
  */
 function openBrowser() {
-    exec(`open -a "Google Chrome" ${url}`, (err, stdout, stderr) => {
-        stdout && console.info(`stdout: ${stdout}`);
-        stderr && console.error(`stderr: ${stderr}`);
+    return new Promise((r, j) => {
+        exec(`open -a "Google Chrome" ${url}`, (err, stdout, stderr) => {
+            stdout && console.info(`stdout: ${stdout}`);
+            stderr && console.error(`stderr: ${stderr}`);
 
-        if (err) throw err;
+            err ? j(err) : r();
+        });
     });
 }
 
-function buildClientCode(afterExecDone) {
-    exec('npm run build:ut', (err, stdout, stderr) => {
-        stdout && console.info(`stdout: ${stdout}`);
-        stderr && console.error(`stderr: ${stderr}`);
+function buildClientCode() {
+    return new Promise((r, j) => {
+        exec('npm run build:ut', (err, stdout, stderr) => {
+            stdout && console.info(`stdout: ${stdout}`);
+            stderr && console.error(`stderr: ${stderr}`);
 
-        if (err) throw err;
-        if (typeof afterExecDone == 'function') {
-            afterExecDone();
-        }
+            err ? j(err) : r();
+        });
     });
 }
 
 function endUnitTest({errors, description} = {}) {
+    rm(entryfile);
+
     if (Array.isArray(errors) && errors.length) {
         console.error(description);
         console.info(`See more information in ${url}`);
@@ -76,7 +85,7 @@ function makeHtmlTpl() {
         for more information
       </h1>
       <div id="root"></div>
-      <script src="./${statics}/unit_test.js"></script>
+      <script src="./${statics}/${ut}.js"></script>
     </body>
   </html>`;
 }
@@ -96,6 +105,20 @@ function randomString() {
  * got the files name
  * piece them together
  */
-function generateTestEntry() {
+function generateTestEntry(dir, file) {
+    let files = walk(dir);
+    let ret = [];
 
+    files.forEach(file => {
+        let fileStr = file[0] == '/'
+            ? file
+            : './' + file;
+        ret.push(`import '${fileStr}';\n`);
+    });
+
+    const str = ret.join('');
+
+    return file
+        ? writeFileSync(file, str, 'utf-8')
+        : str;
 }
