@@ -1,7 +1,6 @@
 const {testapi, statics, ut} = require('../utils/shared');
 const {exec} = require('child_process');
-const {walk, rm} = require('../utils/fs');
-const {writeFileSync, } = require('fs');
+const {rm, generateEntry} = require('../utils/fs');
 const {solve} = require('../utils/path');
 const testPath = `/${randomString()}`;
 const port = process.env.port;
@@ -37,7 +36,7 @@ module.exports = async function(ctx, next) {
 async function initUnitTestEnv() {
     rm(entryfile);
 
-    generateTestEntry(testdir, entryfile);
+    generateEntry(testdir, entryfile);
     try {
         await buildClientCode();
         await openBrowser();
@@ -120,31 +119,3 @@ function randomString() {
     return Math.random().toString(16).replace('.', 'ut');
 }
 
-/**
- * generate unit test entry file
- * like this
- * ```
- * import './history.spec.ts';
- * import './entries/home.sepc.ts';
- * ```
- * walk the test dir &
- * got the files name
- * piece them together
- */
-function generateTestEntry(dir, file) {
-    let files = walk(dir);
-    let ret = [];
-
-    files.forEach(file => {
-        let fileStr = file[0] == '/'
-            ? file
-            : './' + file;
-        ret.push(`import '${fileStr}';\n`);
-    });
-
-    const str = ret.join('');
-
-    return file
-        ? writeFileSync(file, str, 'utf-8')
-        : str;
-}

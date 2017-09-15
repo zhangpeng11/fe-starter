@@ -29,6 +29,7 @@ exports.isFile = isFile;
 exports.content = content;
 exports.walk = walk;
 exports.rm = rm;
+exports.generateEntry = generateEntry;
 
 /** TODO also need support rm dir safely */
 function rm(filename, safe) {
@@ -95,19 +96,37 @@ function _walk2(dir, ret) {
     return ret;
 }
 
+/**
+ * generate unit test entry file
+ * like this
+ * ```
+ * import './history.spec.ts';
+ * import './entries/home.sepc.ts';
+ * ```
+ * walk the test dir &
+ * got the files name
+ * piece them together
+ */
+function generateEntry(dir, file, env) {
+    if (!(file && typeof file == 'string')) {
+        throw new Error(`must pass file argument got: ${file}`);
+    }
 
-// const {assert, $test} = require('./ut');
+    let files = walk(dir);
+    let ret = [];
 
-// $test(() => {
-//     assert(walk('./webpack').length == 5);
-// }, 'should get files in dir');
-// $test(() => {
-//     try {
-//         walk('./yarn.lock');
-//         throw new Error('tmp');
-//     } catch(e) {
-//         if (e.message == 'tmp') {
-//             assert(0);
-//         }
-//     }
-// }, 'should throw error');
+    files.forEach(file => {
+        let loader = env == 'node' ? 'require' : 'import ';
+        let fileStr = file[0] == '/' ? file : './' + file;
+
+        ret.push(`${loader}('${fileStr}');\n`);
+    });
+
+    const str = ret.join('');
+
+    try {
+        return fs.writeFileSync(file, str, 'utf-8');
+    } catch(e) {
+        return e;
+    }
+}

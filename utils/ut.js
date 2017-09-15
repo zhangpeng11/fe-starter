@@ -138,18 +138,3 @@ function nextLoop(operation) {
 
 exports.assert = assert;
 exports.$test = $test;
-
-// $test(() => assert(2 == 2), '1 assert should be success');
-// $test(() => assert({} == {}), '2 assert should be fail');
-
-// $test(async () => {
-//   const get2wait1s = s => setTimeout(e => s(2), 500);
-//   const a = await new Promise(get2wait1s);
-//   assert(a == 2);
-// }, '3 assert should be success');
-
-// $test(async () => {
-//   const get2wait1s = s => setTimeout(e => s(3), 500);
-//   const a = await new Promise(get2wait1s);
-//   assert(a == 4);
-// }, '4 assert should be fail');

@@ -1,10 +1,9 @@
 const {solve} = require('../utils/path');
 const {statics} = require('../utils/shared');
-const tsconf = require(solve('client/tsconfig.json'));
 
-
+const tsoptions = {configFile: solve('client/tsconfig.json')};
 const rules = [
-    { test: /\.tsx?$/, loader: 'ts-loader', options: tsconf },
+    { test: /\.tsx?$/, loader: 'ts-loader', options: tsoptions},
     { test: /routes\.dsl\.js$/, loader: 'route-loader' },
 ];
 
