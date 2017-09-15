@@ -3,8 +3,7 @@ const {exec} = require('child_process');
 const {rm, generateEntry} = require('../utils/fs');
 const {solve} = require('../utils/path');
 const testPath = `/${randomString()}`;
-const port = process.env.port;
-const url = `http://localhost:${port}${testPath}`;
+const url = `http://localhost:${process.env.port}${testPath}`;
 const testdir = solve('./client/test');
 const entryfile = solve('./client/test/index.ts');
 const watchMode = process.env.NODE_ENV == 'development';
@@ -118,4 +117,3 @@ function makeHtmlTpl() {
 function randomString() {
     return Math.random().toString(16).replace('.', 'ut');
 }
-

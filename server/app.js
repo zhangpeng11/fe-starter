@@ -12,7 +12,7 @@ app.use(static);
 
 /**
  * unit test mode
- * design for bussness
+ * design for business
  */
 if (process.env.UNIT_TEST == 'on') {
     app.use(require('./ut.middleware'));

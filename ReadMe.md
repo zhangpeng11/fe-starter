@@ -35,7 +35,7 @@ npm run server
   }
 
   echo "\033[32mlint ...\033[0m";
-  npm run lint.nodejs && npm run lint.client
+  npm run lint.nodejs && npm run test;
   check_result
   ```
 
@@ -58,13 +58,9 @@ npm run server
 * P0 unit test history router
 * P0 css solution
 * P0 publish blog as readMe prototype
-* P1 fs, path => node.js
 * P1 webpack production config
 * P1 load ${business}.file advance
-* P2 check should rebuild dll.js
-* P2 check routes.dsl format
 * P2 server rendering
-* P2 pagestate
 * P2 open controled browser instance
 * ~~P0 add npm run test precommit~~
 * ~~P0 e2e test framework~~
