@@ -29,7 +29,6 @@ npm run server
 
   function check_result {
     if [ $? -ne 0 ]; then
-      echo "\033[31m$@\033[0m"
       exit 1
     fi
   }
@@ -42,7 +41,7 @@ npm run server
 * console
   * `console.warn` as debug info
   * `console.info` as logs
-  * `console.error` as must handled error
+
 
 * throw
   * just ignore, like `try { JSON.parse(data) } catch(e) {} `
@@ -51,6 +50,7 @@ npm run server
 
 * __DO NOT USE__
   * `console.log`
+  * `console.error` (better is throw a error
   * `eval`
 
 
@@ -61,7 +61,7 @@ npm run server
 * P1 webpack production config
 * P1 load ${business}.file advance
 * P2 server rendering
-* P2 open controled browser instance
+* ~~P2 open controled browser instance~~
 * ~~P0 add npm run test precommit~~
 * ~~P0 e2e test framework~~
 * ~~P0 e2e test --watch options~~
