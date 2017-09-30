@@ -10,10 +10,11 @@ app.use(perform);
 app.use(entries);
 app.use(static);
 
-/**
- * unit test mode
- * design for business
- */
-if (process.env.UNIT_TEST == 'on') {
-    app.use(require('./ut.middleware'));
+extra(); // other special middwares
+
+function extra() {
+    /** unit test mode, design for business */
+    if (process.env.UNIT_TEST == 'on') {
+        app.use(require('./ut.middleware'));
+    }
 }

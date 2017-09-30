@@ -2,7 +2,7 @@ const {testapi, statics, ut} = require('../utils/shared');
 const {exec} = require('child_process');
 const {rm, generateEntry} = require('../utils/fs');
 const {solve} = require('../utils/path');
-const testPath = `/${randomString()}`;
+const testPath = '/__test160930__';
 const url = `http://localhost:${process.env.port}${testPath}`;
 const testdir = solve('./client/test');
 const entryfile = solve('./client/test/index.ts');
@@ -14,6 +14,7 @@ module.exports = async function(ctx, next) {
     await next();
 
     if (ctx.path == testPath) {
+        console.info('UNIT_TEST::', url);
         ctx.body = makeHtmlTpl();
         return;
     }
@@ -94,6 +95,7 @@ function endUnitTest({errors, description} = {}) {
         console.info('See more information try `npm run test:watch`');
         process.exit(1);
     } else {
+        console.info('\n~client unit test');
         console.info(description);
         process.exit(0);
     }
@@ -110,10 +112,11 @@ function makeHtmlTpl() {
       <div id="tips"></div>
       <div id="root"></div>
       <script src="./${statics}/${ut}.js"></script>
+      <script> console.info('${url}') </script>
     </body>
   </html>`;
 }
 
-function randomString() {
-    return Math.random().toString(16).replace('.', 'ut');
-}
+// function randomString() {
+//     return Math.random().toString(16).replace('.', 'ut');
+// }

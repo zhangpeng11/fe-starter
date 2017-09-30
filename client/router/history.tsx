@@ -59,7 +59,7 @@ type hookArgs = {
 
 export default class HistoryRouter {
   constructor(routes: Routes) {
-    this.current = null;
+    this.current = undefined;
     this.routes = routes;
     this.url = new UrlParser(location.href);
     this.initRoutes();
@@ -80,7 +80,7 @@ export default class HistoryRouter {
   }
 
   private url: UrlParser;
-  private current: Route | null;
+  private current: Route | undefined;
   private routes: Routes;
 
   /** Attention Side effect Changed `this.routes` */
@@ -103,11 +103,11 @@ export default class HistoryRouter {
     }
 
     const route = this.match(newUrl) as RouteOptions;
-    const current = this.current as RouteOptions;
+    const current = this.current;
 
     if (route) {
       const args = {
-        hook: current.beforeLeave,
+        hook: current && (current  as RouteOptions).beforeLeave,
         from: this.url,
         to: newUrl
       };
@@ -318,5 +318,5 @@ function encode(s: string) {
  * 11. DO 1 then add beforeLeave hook => next(false) cannot to the target page ✓
  * 12. beforeEnter args(from, to, prevent) should be correct ✓
  * 13. beforeLeave args(from, to, prevent) should be correct ✓
- * * = Test Cases ==============================================================
+ * = Test Cases ==============================================================
  */

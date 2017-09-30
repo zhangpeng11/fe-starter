@@ -13,7 +13,7 @@ function runNodejsTest() {
   generateEntry(dir, file, 'node');
   exec(`node ${file}`, (err, stdout, stderr) => {
     const prefix = '\n~ nodejs unit test';
-    stdout && console.info(`${prefix} stdout:\n${stdout}`);
+    stdout && console.info(`${prefix} \n${stdout}`);
     stderr && console.error(`${prefix} stderr:\n${stderr}`);
 
     rm(file);

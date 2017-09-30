@@ -1,18 +1,27 @@
 import {$test, assert} from '../../utils/ut'
-
-$test(()=> {
-  let a = 1;
-  let b = 2;
-  assert(a != b);
-}, 'a & b should be correct');
-
-$test(() => assert(2 == 2), '1 assert should be success');
+import router from '../router'
 
 $test(async () => {
-  const a = await new Promise(s => {
-    setTimeout(e => s(2), 500)
+  const start = Promise.resolve();
+  const end = start.then(() => {
+    router.push('/home');
+    assert(location.pathname == '/home');
+    return wait();
+  }).then(() => {
+    assert(document.querySelector('#home-title'));
   });
-  assert(a == 2);
-}, '3 assert should be success');
+
+  try {
+    await end;
+  } catch(e) {
+    throw e;
+  }
+}, 'router push should correct');
+
+function wait(interval?: number) {
+  return new Promise(r => {
+    setTimeout(r, interval || 500);
+  });
+}
 
 

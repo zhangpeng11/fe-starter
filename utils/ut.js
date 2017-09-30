@@ -1,5 +1,5 @@
 /**
- * Simple Unit Test Kit
+ * Simple UNIT TEST Kit
  * usage::
  *
  * // function with assert
@@ -106,13 +106,13 @@ function friendlyTips() {
 
     if (results.errors.length) {
         html = `<h3 style="color: red">
-            unit test failed,
-            please check devtools
-            (may be need reload
+            UNIT TEST FAILED,
+            PLEASE CHECK DEVTOOLS
+            (MAY BE NEED RELOAD
         </h3>`;
     } else {
         html = `<h1 style="color: green">
-            unit test passed !
+            UNIT TEST PASSED !
         </h1>`;
     }
 
