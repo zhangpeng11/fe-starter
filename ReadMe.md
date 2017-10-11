@@ -53,14 +53,15 @@ npm run server
   * `console.error` (better is throw a error
   * `eval`
 
+## [Blog](https://github.com/dengwanc/dengwanc.github.io/issues/20)
 
 ## TODO
 * P0 unit test history router
 * P0 css solution
-* P0 publish blog as readMe prototype
 * P1 webpack production config
 * P1 load ${business}.file advance
 * P2 server rendering
+* ~~P0 publish blog as readMe prototype~~
 * ~~P2 open controled browser instance~~
 * ~~P0 add npm run test precommit~~
 * ~~P0 e2e test framework~~
