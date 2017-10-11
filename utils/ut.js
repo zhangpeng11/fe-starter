@@ -126,7 +126,7 @@ function reportResult() {
     const passed = results.passed = cases.length - errors.length;
     const percent = results.percent = passed / total;
 
-    console.info(results.description = `\nTotal ${total} Passed ${passed} (${percent*100}%)`);
+    console.info(results.description = `Total ${total} Passed ${passed} (${percent*100}%)`);
 }
 
 function nextLoop(operation) {
