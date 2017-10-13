@@ -53,9 +53,9 @@ npm run server
   * `console.error` (better is throw a error
   * `eval`
 
-## [Blog](https://github.com/dengwanc/dengwanc.github.io/issues/20)
+## Blog https://github.com/dengwanc/dengwanc.github.io/issues/20
 
-## TODO
+## Todo List
 * P0 unit test history router
 * P0 css solution
 * P1 webpack production config
